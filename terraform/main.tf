@@ -37,6 +37,7 @@ resource "helm_release" "monitoring" {
   values = [
     yamlencode({
       grafana = {
+        defaultDashboardsEnabled  = false
         defaultDashboardsTimezone = "browser"
         "grafana.ini" = {
           server = {
