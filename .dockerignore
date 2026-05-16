@@ -1,0 +1,13 @@
+.git
+.github
+.terraform
+terraform
+charts
+loadtest
+bin
+dist
+coverage.out
+*.tfstate
+*.tfstate.*
+.DS_Store
+

@@ -1,0 +1,7 @@
+apiVersion: v2
+name: ecommerce-api
+description: SRE capstone e-commerce API with SLO metrics and autoscaling.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+

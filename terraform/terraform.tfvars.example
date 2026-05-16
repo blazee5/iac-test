@@ -1,0 +1,13 @@
+kubeconfig_path = "~/.kube/config"
+kube_context    = ""
+
+namespace            = "project"
+monitoring_namespace = "monitoring"
+
+app_image_repository = "ghcr.io/blazee5/iac-test"
+app_image_tag        = "latest"
+
+grafana_admin_password = "password"
+
+hpa_min_replicas = 2
+hpa_max_replicas = 8

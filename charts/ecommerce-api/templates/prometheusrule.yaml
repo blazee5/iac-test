@@ -1,0 +1,50 @@
+{{- if and .Values.monitoring.enabled .Values.monitoring.prometheusRule.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "ecommerce-api.fullname" . }}
+  labels:
+    {{- include "ecommerce-api.labels" . | nindent 4 }}
+    release: {{ .Values.monitoring.releaseLabel | quote }}
+spec:
+  groups:
+    - name: {{ include "ecommerce-api.name" . }}.slo
+      rules:
+        - alert: EcommerceAPIAvailabilityBelowSLO
+          expr: |
+            (
+              sum(rate(ecommerce_api_http_requests_total{job="{{ include "ecommerce-api.name" . }}",status!~"5.."}[5m]))
+              /
+              sum(rate(ecommerce_api_http_requests_total{job="{{ include "ecommerce-api.name" . }}"}[5m]))
+            ) < 0.99
+          for: 10m
+          labels:
+            severity: warning
+            slo: availability
+          annotations:
+            summary: Ecommerce API availability is below 99 percent
+            description: Successful request ratio over the last 5 minutes is below the availability SLO.
+        - alert: EcommerceAPIHighLatency
+          expr: |
+            histogram_quantile(
+              0.95,
+              sum(rate(ecommerce_api_http_request_duration_seconds_bucket{job="{{ include "ecommerce-api.name" . }}"}[5m])) by (le)
+            ) > 0.5
+          for: 10m
+          labels:
+            severity: warning
+            slo: latency
+          annotations:
+            summary: Ecommerce API p95 latency is above 500ms
+            description: P95 request latency is above the latency SLO for 10 minutes.
+        - alert: EcommerceAPIDown
+          expr: sum(up{job="{{ include "ecommerce-api.name" . }}"}) < 1
+          for: 2m
+          labels:
+            severity: critical
+            slo: availability
+          annotations:
+            summary: Ecommerce API has no healthy scrape targets
+            description: Prometheus cannot scrape any healthy ecommerce API target.
+{{- end }}
+
