@@ -11,3 +11,13 @@ grafana_admin_password = "password"
 
 hpa_min_replicas = 2
 hpa_max_replicas = 8
+
+app_ingress_enabled    = true
+app_ingress_class_name = "traefik"
+app_ingress_host       = ""
+app_ingress_path       = "/"
+
+grafana_ingress_enabled    = true
+grafana_ingress_class_name = "traefik"
+grafana_ingress_host       = ""
+grafana_ingress_path       = "/grafana"

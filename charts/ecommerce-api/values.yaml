@@ -36,6 +36,17 @@ service:
   port: 80
   targetPort: 8080
 
+ingress:
+  enabled: true
+  className: traefik
+  annotations: {}
+  hosts:
+    - host: ""
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
 resources:
   requests:
     cpu: 100m

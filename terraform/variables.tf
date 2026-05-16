@@ -47,6 +47,30 @@ variable "prometheus_retention" {
   default     = "7d"
 }
 
+variable "grafana_ingress_enabled" {
+  description = "Expose Grafana through Kubernetes Ingress."
+  type        = bool
+  default     = true
+}
+
+variable "grafana_ingress_class_name" {
+  description = "IngressClass used for Grafana. k3s uses traefik by default."
+  type        = string
+  default     = "traefik"
+}
+
+variable "grafana_ingress_host" {
+  description = "Optional Grafana hostname. Empty value creates a hostless rule."
+  type        = string
+  default     = ""
+}
+
+variable "grafana_ingress_path" {
+  description = "HTTP path for Grafana ingress."
+  type        = string
+  default     = "/grafana"
+}
+
 variable "app_image_repository" {
   description = "Application image repository."
   type        = string
@@ -87,6 +111,30 @@ variable "app_memory_limit" {
   description = "Application memory limit."
   type        = string
   default     = "256Mi"
+}
+
+variable "app_ingress_enabled" {
+  description = "Expose the application through Kubernetes Ingress."
+  type        = bool
+  default     = true
+}
+
+variable "app_ingress_class_name" {
+  description = "IngressClass used for the application. k3s uses traefik by default."
+  type        = string
+  default     = "traefik"
+}
+
+variable "app_ingress_host" {
+  description = "Optional application hostname. Empty value creates a hostless rule."
+  type        = string
+  default     = ""
+}
+
+variable "app_ingress_path" {
+  description = "HTTP path for the application ingress."
+  type        = string
+  default     = "/"
 }
 
 variable "hpa_min_replicas" {

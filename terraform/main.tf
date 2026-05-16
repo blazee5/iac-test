@@ -1,3 +1,7 @@
+locals {
+  grafana_root_url = var.grafana_ingress_path == "/" ? "%(protocol)s://%(domain)s:%(http_port)s/" : "%(protocol)s://%(domain)s:%(http_port)s${trimsuffix(var.grafana_ingress_path, "/")}/"
+}
+
 resource "kubernetes_namespace_v1" "app" {
   metadata {
     name = var.namespace
@@ -34,6 +38,12 @@ resource "helm_release" "monitoring" {
     yamlencode({
       grafana = {
         defaultDashboardsTimezone = "browser"
+        "grafana.ini" = {
+          server = {
+            root_url            = local.grafana_root_url
+            serve_from_sub_path = var.grafana_ingress_path != "/"
+          }
+        }
         sidecar = {
           dashboards = {
             enabled         = true
@@ -59,6 +69,45 @@ resource "helm_release" "monitoring" {
     name  = "grafana.adminPassword"
     value = var.grafana_admin_password
   }
+}
+
+resource "kubernetes_ingress_v1" "grafana" {
+  count = var.grafana_ingress_enabled ? 1 : 0
+
+  metadata {
+    name      = "grafana"
+    namespace = kubernetes_namespace_v1.monitoring.metadata[0].name
+    labels = {
+      "app.kubernetes.io/name"       = "grafana"
+      "app.kubernetes.io/managed-by" = "terraform"
+    }
+  }
+
+  spec {
+    ingress_class_name = var.grafana_ingress_class_name == "" ? null : var.grafana_ingress_class_name
+
+    rule {
+      host = var.grafana_ingress_host == "" ? null : var.grafana_ingress_host
+
+      http {
+        path {
+          path      = var.grafana_ingress_path
+          path_type = "Prefix"
+
+          backend {
+            service {
+              name = "${var.prometheus_release_name}-grafana"
+              port {
+                number = 80
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  depends_on = [helm_release.monitoring]
 }
 
 resource "helm_release" "app" {
@@ -99,9 +148,24 @@ resource "helm_release" "app" {
         enabled      = true
         releaseLabel = var.prometheus_release_name
       }
+      ingress = {
+        enabled   = var.app_ingress_enabled
+        className = var.app_ingress_class_name
+        hosts = [
+          {
+            host = var.app_ingress_host
+            paths = [
+              {
+                path     = var.app_ingress_path
+                pathType = "Prefix"
+              }
+            ]
+          }
+        ]
+        tls = []
+      }
     })
   ]
 
   depends_on = [helm_release.monitoring]
 }
-

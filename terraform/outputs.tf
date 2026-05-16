@@ -10,11 +10,10 @@ output "application_release" {
   value = helm_release.app.name
 }
 
-output "grafana_port_forward_command" {
-  value = "kubectl -n ${var.monitoring_namespace} port-forward svc/${var.prometheus_release_name}-grafana 3000:80"
+output "application_ingress_url" {
+  value = var.app_ingress_enabled ? (var.app_ingress_host == "" ? "http://<server-ip>${var.app_ingress_path}" : "http://${var.app_ingress_host}${var.app_ingress_path}") : "application ingress disabled"
 }
 
-output "prometheus_port_forward_command" {
-  value = "kubectl -n ${var.monitoring_namespace} port-forward svc/${var.prometheus_release_name}-prometheus 9090:9090"
+output "grafana_ingress_url" {
+  value = var.grafana_ingress_enabled ? (var.grafana_ingress_host == "" ? "http://<server-ip>${var.grafana_ingress_path}" : "http://${var.grafana_ingress_host}${var.grafana_ingress_path}") : "grafana ingress disabled"
 }
-
