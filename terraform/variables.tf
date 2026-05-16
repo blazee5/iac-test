@@ -13,7 +13,7 @@ variable "kube_context" {
 variable "namespace" {
   description = "Kubernetes namespace for the application."
   type        = string
-  default     = "sre-capstone"
+  default     = "project"
 }
 
 variable "monitoring_namespace" {
@@ -38,7 +38,7 @@ variable "grafana_admin_password" {
   description = "Initial Grafana admin password."
   type        = string
   sensitive   = true
-  default     = "change-me-sre-capstone"
+  default     = "password"
 }
 
 variable "prometheus_retention" {

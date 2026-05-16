@@ -6,7 +6,7 @@ resource "kubernetes_namespace_v1" "app" {
   metadata {
     name = var.namespace
     labels = {
-      "app.kubernetes.io/name"       = "sre-capstone"
+      "app.kubernetes.io/name"       = "project"
       "app.kubernetes.io/managed-by" = "terraform"
     }
   }

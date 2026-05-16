@@ -102,7 +102,7 @@ jobs:
           IMAGE_TAG: sha-${{ needs.build.outputs.image_tag }}
         run: |
           helm upgrade --install ecommerce-api ./charts/ecommerce-api \
-            --namespace sre-capstone \
+            --namespace project \
             --create-namespace \
             --set image.repository="$IMAGE_REPOSITORY" \
             --set image.tag="$IMAGE_TAG" \
@@ -110,5 +110,5 @@ jobs:
             --atomic \
             --wait \
             --timeout 5m
-          kubectl -n sre-capstone rollout status deployment/ecommerce-api --timeout=120s
+          kubectl -n project rollout status deployment/ecommerce-api --timeout=120s
 

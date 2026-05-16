@@ -158,7 +158,7 @@ data:
       "time": {"from": "now-1h", "to": "now"},
       "timezone": "browser",
       "title": "SRE Capstone - Ecommerce API",
-      "uid": "sre-capstone-ecommerce-api",
+      "uid": "project-ecommerce-api",
       "version": 1,
       "weekStart": ""
     }
